@@ -55,6 +55,11 @@ h1{
   font-weight:bold;
 }
 
+.qty{
+  width:70px;
+  text-align:center;
+}
+
 input,textarea{
   width:100%;
   padding:10px;
@@ -64,16 +69,12 @@ input,textarea{
   border:1px solid #ccc;
 }
 
-.qty{
-  width:70px;
-  text-align:center;
-}
-
 .total-box{
-  font-size:18px;
+  font-size:20px;
   font-weight:bold;
   text-align:right;
   margin-top:10px;
+  color:#c40000;
 }
 
 button{
@@ -102,7 +103,7 @@ button:hover{
 
 <body>
 
-<h1>🍌 Twisroll Queens</h1>
+<h1>🍌 Twisties Banana Roll</h1>
 
 <form id="orderForm">
 
@@ -116,7 +117,7 @@ button:hover{
     <img src="https://i.imgur.com/vKRaK6M.jpeg">
     <p>Twisroll Queens</p>
     <p class="price">RM6</p>
-    Qty:
+    Qty:<br>
     <input type="number" class="qty" id="qty1" value="0" min="0">
   </div>
 
@@ -124,7 +125,7 @@ button:hover{
     <img src="https://i.imgur.com/Xd7mFzS.jpeg">
     <p>Banana Roll</p>
     <p class="price">RM7</p>
-    Qty:
+    Qty:<br>
     <input type="number" class="qty" id="qty2" value="0" min="0">
   </div>
 
@@ -138,6 +139,7 @@ Total: RM <span id="total">0.00</span>
 
 
 <div class="card">
+
 <h3>Maklumat Pelanggan</h3>
 
 <input type="text" id="nama" placeholder="Nama" required>
@@ -155,7 +157,7 @@ Total: RM <span id="total">0.00</span>
 
 <script>
 
-const scriptURL = "https://script.google.com/macros/s/AKfycbzQqEegbVvxRyQZO_vxVcB2Pg2jB6KSIkRtVpc8ttUCeOhkvf1GzxsoMbfg6p0L5wYc1g/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbxCVQU8D-BPUZz9tk5AmE2rP6HiQSWjTgxDait3SvOMawNBR-kpcciVCB6nVW-i49smag/exec";
 
 const price1 = 6;
 const price2 = 7;
@@ -183,13 +185,28 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
     return;
   }
 
+  let menuDetail = [];
+  let totalQty = 0;
+
+  if(qty1.value > 0){
+    menuDetail.push(`Twisroll Queens x${qty1.value}`);
+    totalQty += parseInt(qty1.value);
+  }
+
+  if(qty2.value > 0){
+    menuDetail.push(`Banana Roll x${qty2.value}`);
+    totalQty += parseInt(qty2.value);
+  }
+
+  const totalAmount = totalEl.innerText;
+
   const data = {
     nama: nama.value,
     phone: phone.value,
-    menu: `Queens x${qty1.value}, Banana x${qty2.value}`,
-    qty: parseInt(qty1.value) + parseInt(qty2.value),
-    note: note.value,
-    total: totalEl.innerText
+    menu: menuDetail.join(", "),
+    qty: totalQty,
+    total: totalAmount,
+    note: note.value
   };
 
   const res = await fetch(scriptURL, {
@@ -200,7 +217,7 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
   const json = await res.json();
 
   document.getElementById("result").innerHTML =
-    "✅ Order berjaya!<br>No Order: <b>" + json.orderId + "</b>";
+    `✅ Order berjaya!<br>No Order: <b>${json.orderId}</b><br>Total: RM ${totalAmount}`;
 
   this.reset();
   updateTotal();
