@@ -22,14 +22,16 @@ h1{
   margin-bottom:20px;
 }
 
+/* CARD */
 .card{
   background:white;
-  padding:20px;
+  padding:25px;
   border-radius:12px;
   box-shadow:0 0 10px rgba(0,0,0,.1);
   margin-bottom:15px;
 }
 
+/* MENU */
 .menu-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -60,13 +62,15 @@ h1{
   text-align:center;
 }
 
+/* INPUT CENTER */
 input,textarea{
   width:100%;
   padding:10px;
-  margin-top:8px;
-  margin-bottom:15px;
+  margin:8px auto 15px auto;
   border-radius:8px;
   border:1px solid #ccc;
+  display:block;
+  box-sizing:border-box;
 }
 
 .total-box{
@@ -77,6 +81,7 @@ input,textarea{
   color:#c40000;
 }
 
+/* BUTTON */
 button{
   width:100%;
   padding:12px;
@@ -86,16 +91,39 @@ button{
   border-radius:8px;
   font-size:16px;
   cursor:pointer;
+  transition:0.3s;
 }
 
 button:hover{
   background:#990000;
 }
 
-.result{
+button:disabled{
+  background:#c40000;
+  opacity:0.6;
+  cursor:wait;
+}
+
+/* POPUP */
+.popup{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,.5);
+  justify-content:center;
+  align-items:center;
+}
+
+.popup-box{
+  background:white;
+  padding:25px;
+  border-radius:12px;
   text-align:center;
-  font-weight:bold;
-  margin-top:10px;
+  width:80%;
+  max-width:320px;
 }
 
 </style>
@@ -146,13 +174,21 @@ Total: RM <span id="total">0.00</span>
 <input type="tel" id="phone" placeholder="No Phone" required>
 <textarea id="note" placeholder="Catatan"></textarea>
 
-<button type="submit">Hantar Order</button>
-
-<div class="result" id="result"></div>
+<button type="submit" id="submitBtn">Hantar Order</button>
 
 </div>
 
 </form>
+
+
+<!-- POPUP MODAL -->
+<div id="popup" class="popup">
+  <div class="popup-box">
+    <h3>Order Berjaya 🎉</h3>
+    <p id="popupText"></p>
+    <button onclick="closePopup()">OK</button>
+  </div>
+</div>
 
 
 <script>
@@ -166,6 +202,12 @@ const qty1 = document.getElementById("qty1");
 const qty2 = document.getElementById("qty2");
 const totalEl = document.getElementById("total");
 
+const nama = document.getElementById("nama");
+const phone = document.getElementById("phone");
+const note = document.getElementById("note");
+const submitBtn = document.getElementById("submitBtn");
+
+/* UPDATE TOTAL */
 function updateTotal(){
   const total = (qty1.value * price1) + (qty2.value * price2);
   totalEl.innerText = total.toFixed(2);
@@ -176,6 +218,17 @@ qty2.oninput = updateTotal;
 
 updateTotal();
 
+/* POPUP */
+function showPopup(text){
+  document.getElementById("popupText").innerHTML = text;
+  document.getElementById("popup").style.display = "flex";
+}
+
+function closePopup(){
+  document.getElementById("popup").style.display = "none";
+}
+
+/* SUBMIT */
 document.getElementById("orderForm").addEventListener("submit", async function(e){
 
   e.preventDefault();
@@ -184,6 +237,10 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
     alert("Sila pilih sekurang-kurangnya 1 menu");
     return;
   }
+
+  // start loading
+  submitBtn.disabled = true;
+  submitBtn.innerText = "Loading...";
 
   let menuDetail = [];
   let totalQty = 0;
@@ -209,18 +266,26 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
     note: note.value
   };
 
-  const res = await fetch(scriptURL, {
-    method: "POST",
-    body: JSON.stringify(data)
-  });
+  try {
+    const res = await fetch(scriptURL, {
+      method: "POST",
+      body: JSON.stringify(data)
+    });
 
-  const json = await res.json();
+    const json = await res.json();
 
-  document.getElementById("result").innerHTML =
-    `✅ Order berjaya!<br>No Order: <b>${json.orderId}</b><br>Total: RM ${totalAmount}`;
+    showPopup(`No Order: <b>${json.orderId}</b><br>Total: RM ${totalAmount}`);
 
-  this.reset();
-  updateTotal();
+    this.reset();
+    updateTotal();
+
+  } catch(err) {
+    alert("Gagal hantar order. Sila cuba lagi.");
+  }
+
+  // stop loading
+  submitBtn.disabled = false;
+  submitBtn.innerText = "Hantar Order";
 
 });
 
