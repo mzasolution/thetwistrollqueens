@@ -7,17 +7,19 @@
 <title>Order Twisroll Queens</title>
 
 <style>
+
 body{
   font-family: Arial;
   background:#f5f5f5;
   padding:20px;
-  max-width:500px;
+  max-width:600px;
   margin:auto;
 }
 
 h1{
   text-align:center;
   color:#c40000;
+  margin-bottom:20px;
 }
 
 .card{
@@ -25,15 +27,53 @@ h1{
   padding:20px;
   border-radius:12px;
   box-shadow:0 0 10px rgba(0,0,0,.1);
+  margin-bottom:15px;
 }
 
-input,select,textarea{
+.menu-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+.menu-item{
+  border:2px solid #ddd;
+  border-radius:12px;
+  padding:10px;
+  text-align:center;
+}
+
+.menu-item img{
+  width:100%;
+  height:120px;
+  object-fit:cover;
+  border-radius:10px;
+}
+
+.price{
+  color:#c40000;
+  font-weight:bold;
+}
+
+input,textarea{
   width:100%;
   padding:10px;
   margin-top:8px;
   margin-bottom:15px;
   border-radius:8px;
   border:1px solid #ccc;
+}
+
+.qty{
+  width:70px;
+  text-align:center;
+}
+
+.total-box{
+  font-size:18px;
+  font-weight:bold;
+  text-align:right;
+  margin-top:10px;
 }
 
 button{
@@ -52,10 +92,11 @@ button:hover{
 }
 
 .result{
-  margin-top:15px;
   text-align:center;
   font-weight:bold;
+  margin-top:10px;
 }
+
 </style>
 </head>
 
@@ -63,50 +104,92 @@ button:hover{
 
 <h1>🍌 Twisroll Queens</h1>
 
-<div class="card">
-
 <form id="orderForm">
 
-<label>Nama</label>
-<input type="text" id="nama" required>
+<div class="card">
 
-<label>No Phone</label>
-<input type="tel" id="phone" required>
+<h3>Pilih Menu</h3>
 
-<label>Pilih Menu</label>
-<select id="menu">
-  <option>Twisroll Queens</option>
-  <option>Twisroll Banana Roll</option>
-</select>
+<div class="menu-grid">
 
-<label>Kuantiti</label>
-<input type="number" id="qty" min="1" value="1">
+  <div class="menu-item">
+    <img src="https://i.imgur.com/vKRaK6M.jpeg">
+    <p>Twisroll Queens</p>
+    <p class="price">RM6</p>
+    Qty:
+    <input type="number" class="qty" id="qty1" value="0" min="0">
+  </div>
 
-<label>Catatan</label>
-<textarea id="note"></textarea>
+  <div class="menu-item">
+    <img src="https://i.imgur.com/Xd7mFzS.jpeg">
+    <p>Banana Roll</p>
+    <p class="price">RM7</p>
+    Qty:
+    <input type="number" class="qty" id="qty2" value="0" min="0">
+  </div>
+
+</div>
+
+<div class="total-box">
+Total: RM <span id="total">0.00</span>
+</div>
+
+</div>
+
+
+<div class="card">
+<h3>Maklumat Pelanggan</h3>
+
+<input type="text" id="nama" placeholder="Nama" required>
+<input type="tel" id="phone" placeholder="No Phone" required>
+<textarea id="note" placeholder="Catatan"></textarea>
 
 <button type="submit">Hantar Order</button>
-
-</form>
 
 <div class="result" id="result"></div>
 
 </div>
 
+</form>
+
+
 <script>
 
 const scriptURL = "https://script.google.com/macros/s/AKfycbzQqEegbVvxRyQZO_vxVcB2Pg2jB6KSIkRtVpc8ttUCeOhkvf1GzxsoMbfg6p0L5wYc1g/exec";
+
+const price1 = 6;
+const price2 = 7;
+
+const qty1 = document.getElementById("qty1");
+const qty2 = document.getElementById("qty2");
+const totalEl = document.getElementById("total");
+
+function updateTotal(){
+  const total = (qty1.value * price1) + (qty2.value * price2);
+  totalEl.innerText = total.toFixed(2);
+}
+
+qty1.oninput = updateTotal;
+qty2.oninput = updateTotal;
+
+updateTotal();
 
 document.getElementById("orderForm").addEventListener("submit", async function(e){
 
   e.preventDefault();
 
+  if(qty1.value == 0 && qty2.value == 0){
+    alert("Sila pilih sekurang-kurangnya 1 menu");
+    return;
+  }
+
   const data = {
     nama: nama.value,
     phone: phone.value,
-    menu: menu.value,
-    qty: qty.value,
-    note: note.value
+    menu: `Queens x${qty1.value}, Banana x${qty2.value}`,
+    qty: parseInt(qty1.value) + parseInt(qty2.value),
+    note: note.value,
+    total: totalEl.innerText
   };
 
   const res = await fetch(scriptURL, {
@@ -120,6 +203,8 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
     "✅ Order berjaya!<br>No Order: <b>" + json.orderId + "</b>";
 
   this.reset();
+  updateTotal();
+
 });
 
 </script>
