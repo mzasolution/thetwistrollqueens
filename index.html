@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Order Twisroll Queens</title>
+
+<style>
+body{
+  font-family: Arial;
+  background:#f5f5f5;
+  padding:20px;
+  max-width:500px;
+  margin:auto;
+}
+
+h1{
+  text-align:center;
+  color:#c40000;
+}
+
+.card{
+  background:white;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 0 10px rgba(0,0,0,.1);
+}
+
+input,select,textarea{
+  width:100%;
+  padding:10px;
+  margin-top:8px;
+  margin-bottom:15px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  background:#c40000;
+  color:white;
+  border:none;
+  border-radius:8px;
+  font-size:16px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#990000;
+}
+
+.result{
+  margin-top:15px;
+  text-align:center;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🍌 Twisroll Queens</h1>
+
+<div class="card">
+
+<form id="orderForm">
+
+<label>Nama</label>
+<input type="text" id="nama" required>
+
+<label>No Phone</label>
+<input type="tel" id="phone" required>
+
+<label>Pilih Menu</label>
+<select id="menu">
+  <option>Twisroll Queens</option>
+  <option>Twisroll Banana Roll</option>
+</select>
+
+<label>Kuantiti</label>
+<input type="number" id="qty" min="1" value="1">
+
+<label>Catatan</label>
+<textarea id="note"></textarea>
+
+<button type="submit">Hantar Order</button>
+
+</form>
+
+<div class="result" id="result"></div>
+
+</div>
+
+<script>
+
+const scriptURL = "PASTE_URL_APPS_SCRIPT_KAT_SINI";
+
+document.getElementById("orderForm").addEventListener("submit", async function(e){
+
+  e.preventDefault();
+
+  const data = {
+    nama: nama.value,
+    phone: phone.value,
+    menu: menu.value,
+    qty: qty.value,
+    note: note.value
+  };
+
+  const res = await fetch(scriptURL, {
+    method: "POST",
+    body: JSON.stringify(data)
+  });
+
+  const json = await res.json();
+
+  document.getElementById("result").innerHTML =
+    "✅ Order berjaya!<br>No Order: <b>" + json.orderId + "</b>";
+
+  this.reset();
+});
+
+</script>
+
+</body>
+</html>
