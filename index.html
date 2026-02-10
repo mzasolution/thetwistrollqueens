@@ -3,185 +3,76 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Order Twisroll Queens</title>
-
 <style>
-
-body{
-  font-family: Arial;
-  background:#f5f5f5;
-  padding:20px;
-  max-width:600px;
-  margin:auto;
-}
-
-h1{
-  text-align:center;
-  color:#c40000;
-  margin-bottom:20px;
-}
-
-/* CARD */
-.card{
-  background:white;
-  padding:25px;
-  border-radius:12px;
-  box-shadow:0 0 10px rgba(0,0,0,.1);
-  margin-bottom:15px;
-}
-
-/* MENU */
-.menu-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:15px;
-}
-
-.menu-item{
-  border:2px solid #ddd;
-  border-radius:12px;
-  padding:10px;
-  text-align:center;
-}
-
-.menu-item img{
-  width:100%;
-  height:120px;
-  object-fit:cover;
-  border-radius:10px;
-}
-
-.price{
-  color:#c40000;
-  font-weight:bold;
-}
-
-.qty{
-  width:70px;
-  text-align:center;
-}
-
-/* INPUT CENTER */
-input,textarea{
-  width:100%;
-  padding:10px;
-  margin:8px auto 15px auto;
-  border-radius:8px;
-  border:1px solid #ccc;
-  display:block;
-  box-sizing:border-box;
-}
-
-.total-box{
-  font-size:20px;
-  font-weight:bold;
-  text-align:right;
-  margin-top:10px;
-  color:#c40000;
-}
-
-/* BUTTON */
-button{
-  width:100%;
-  padding:12px;
-  background:#c40000;
-  color:white;
-  border:none;
-  border-radius:8px;
-  font-size:16px;
-  cursor:pointer;
-  transition:0.3s;
-}
-
-button:hover{
-  background:#990000;
-}
-
-button:disabled{
-  background:#c40000;
-  opacity:0.6;
-  cursor:wait;
-}
-
-/* POPUP */
-.popup{
-  display:none;
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,.5);
-  justify-content:center;
-  align-items:center;
-}
-
-.popup-box{
-  background:white;
-  padding:25px;
-  border-radius:12px;
-  text-align:center;
-  width:80%;
-  max-width:320px;
-}
-
+body{font-family:Arial; background:#f5f5f5; padding:20px; max-width:600px; margin:auto;}
+h1{text-align:center;color:#c40000;margin-bottom:20px;}
+.card{background:white;padding:25px;border-radius:12px;box-shadow:0 0 10px rgba(0,0,0,.1);margin-bottom:15px;}
+.menu-grid{display:grid; grid-template-columns:1fr 1fr; gap:15px;}
+.menu-item{border:2px solid #ddd; border-radius:12px; padding:10px; text-align:center;}
+.menu-item img{width:100%; height:120px; object-fit:cover; border-radius:10px;}
+.price{color:#c40000; font-weight:bold;}
+.qty{width:70px;text-align:center;}
+input,textarea,select{width:100%;padding:10px;margin:8px auto 15px auto;border-radius:8px;border:1px solid #ccc;display:block;box-sizing:border-box;}
+.total-box{font-size:20px;font-weight:bold;text-align:right;margin-top:10px;color:#c40000;}
+button{width:100%;padding:12px;background:#c40000;color:white;border:none;border-radius:8px;font-size:16px;cursor:pointer;}
+button:disabled{opacity:0.6;}
+.popup{display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.5); justify-content:center; align-items:center;}
+.popup-box{background:white;padding:25px;border-radius:12px;text-align:center;}
+.popup-box a{color:#c40000; text-decoration:none; font-weight:bold;}
+.bank-info{border:2px dashed #c40000; border-radius:10px; padding:15px; margin-bottom:15px; background:#fff8f8;}
 </style>
 </head>
-
 <body>
 
 <h1>🍌 Twisties Banana Roll</h1>
 
 <form id="orderForm">
-
-<div class="card">
-
-<h3>Pilih Menu</h3>
-
-<div class="menu-grid">
-
-  <div class="menu-item">
-    <img src="https://i.imgur.com/vKRaK6M.jpeg">
-    <p>Twisroll Queens</p>
-    <p class="price">RM6</p>
-    Qty:<br>
-    <input type="number" class="qty" id="qty1" value="0" min="0">
+  <div class="card">
+    <h3>Pilih Menu</h3>
+    <div class="menu-grid">
+      <div class="menu-item">
+        <img src="https://raw.githubusercontent.com/mzasolution/thetwistrollqueens/main/images.jpg">
+        <p>Twisroll Queens</p>
+        <p class="price">RM6</p>
+        Qty:<input type="number" id="qty1" class="qty" value="0" min="0">
+      </div>
+      <div class="menu-item">
+        <img src="https://raw.githubusercontent.com/mzasolution/thetwistrollqueens/main/pb-banana-roll-ups-1square.jpg">
+        <p>Banana Roll</p>
+        <p class="price">RM7</p>
+        Qty:<input type="number" id="qty2" class="qty" value="0" min="0">
+      </div>
+    </div>
+    <div class="total-box">Total: RM <span id="total">0.00</span></div>
   </div>
 
-  <div class="menu-item">
-    <img src="https://i.imgur.com/Xd7mFzS.jpeg">
-    <p>Banana Roll</p>
-    <p class="price">RM7</p>
-    Qty:<br>
-    <input type="number" class="qty" id="qty2" value="0" min="0">
+  <div class="card">
+    <h3>Maklumat Pelanggan</h3>
+    <input type="text" id="nama" placeholder="Nama" required>
+    <input type="tel" id="phone" placeholder="No Phone" required>
+    <textarea id="note" placeholder="Catatan"></textarea>
+
+    <!-- Maklumat Bank -->
+    <div class="bank-info">
+      <h4 style="margin-top:0;">Maklumat Bank untuk rujukan</h4>
+      <p><b>Bank:</b> Maybank</p>
+      <p><b>No Akaun:</b> 12345678901234</p>
+    </div>
+
+    <!-- Upload Resit dengan teks peringatan -->
+    <label>
+      Upload Resit (WAJIB) <br>
+      <small style="color:#c40000; font-style:italic;">
+        *Sila membuat pembayaran terlebih dahulu dan upload resit pembayaran*
+      </small>
+    </label>
+    <input type="file" id="doc" accept=".pdf,.jpg,.png,.doc,.docx" required>
+
+    <button type="submit" id="submitBtn">Hantar Order</button>
   </div>
-
-</div>
-
-<div class="total-box">
-Total: RM <span id="total">0.00</span>
-</div>
-
-</div>
-
-
-<div class="card">
-
-<h3>Maklumat Pelanggan</h3>
-
-<input type="text" id="nama" placeholder="Nama" required>
-<input type="tel" id="phone" placeholder="No Phone" required>
-<textarea id="note" placeholder="Catatan"></textarea>
-
-<button type="submit" id="submitBtn">Hantar Order</button>
-
-</div>
-
 </form>
 
-
-<!-- POPUP MODAL -->
 <div id="popup" class="popup">
   <div class="popup-box">
     <h3>Order Berjaya 🎉</h3>
@@ -190,105 +81,91 @@ Total: RM <span id="total">0.00</span>
   </div>
 </div>
 
-
 <script>
+const scriptURL = "https://script.google.com/macros/s/AKfycbxxycZJa8B64dxiRpAQZOdHAPIxXFlSK92ky6GTesTu2T9IlH5rIt-Clk7BXD6zwVKX/exec";
 
-const scriptURL = "https://script.google.com/macros/s/AKfycbxCVQU8D-BPUZz9tk5AmE2rP6HiQSWjTgxDait3SvOMawNBR-kpcciVCB6nVW-i49smag/exec";
+const price1=6, price2=7;
+const qty1=document.getElementById("qty1");
+const qty2=document.getElementById("qty2");
+const totalEl=document.getElementById("total");
+const nama=document.getElementById("nama");
+const phone=document.getElementById("phone");
+const note=document.getElementById("note");
+const fileInput=document.getElementById("doc");
+const submitBtn=document.getElementById("submitBtn");
 
-const price1 = 6;
-const price2 = 7;
-
-const qty1 = document.getElementById("qty1");
-const qty2 = document.getElementById("qty2");
-const totalEl = document.getElementById("total");
-
-const nama = document.getElementById("nama");
-const phone = document.getElementById("phone");
-const note = document.getElementById("note");
-const submitBtn = document.getElementById("submitBtn");
-
-/* UPDATE TOTAL */
 function updateTotal(){
-  const total = (qty1.value * price1) + (qty2.value * price2);
-  totalEl.innerText = total.toFixed(2);
+  const total=(qty1.value*price1)+(qty2.value*price2);
+  totalEl.innerText=total.toFixed(2);
 }
-
-qty1.oninput = updateTotal;
-qty2.oninput = updateTotal;
-
+qty1.oninput=updateTotal;
+qty2.oninput=updateTotal;
 updateTotal();
 
-/* POPUP */
 function showPopup(text){
-  document.getElementById("popupText").innerHTML = text;
-  document.getElementById("popup").style.display = "flex";
+  document.getElementById("popupText").innerHTML=text;
+  document.getElementById("popup").style.display="flex";
 }
+function closePopup(){document.getElementById("popup").style.display="none";}
 
-function closePopup(){
-  document.getElementById("popup").style.display = "none";
-}
-
-/* SUBMIT */
 document.getElementById("orderForm").addEventListener("submit", async function(e){
-
   e.preventDefault();
 
-  if(qty1.value == 0 && qty2.value == 0){
-    alert("Sila pilih sekurang-kurangnya 1 menu");
+  // Validasi wajib
+  if(qty1.value==0 && qty2.value==0){alert("Sila pilih sekurang-kurangnya 1 menu"); return;}
+  if(!fileInput.files.length){
+    alert("⚠️ Sila membuat pembayaran terlebih dahulu dan upload resit pembayaran");
     return;
   }
 
-  // start loading
-  submitBtn.disabled = true;
-  submitBtn.innerText = "Loading...";
+  submitBtn.disabled=true; 
+  submitBtn.innerText="Loading...";
 
-  let menuDetail = [];
-  let totalQty = 0;
+  let menuDetail=[], totalQty=0;
+  if(qty1.value>0){menuDetail.push(`Twisroll Queens x${qty1.value}`); totalQty+=parseInt(qty1.value);}
+  if(qty2.value>0){menuDetail.push(`Banana Roll x${qty2.value}`); totalQty+=parseInt(qty2.value);}
+  const totalAmount=totalEl.innerText;
 
-  if(qty1.value > 0){
-    menuDetail.push(`Twisroll Queens x${qty1.value}`);
-    totalQty += parseInt(qty1.value);
-  }
+  let base64File="", fileName="";
+  const file=fileInput.files[0];
+  fileName=file.name;
+  base64File=await new Promise(resolve=>{
+    const reader=new FileReader();
+    reader.onload=()=>resolve(reader.result.split(",")[1]);
+    reader.readAsDataURL(file);
+  });
 
-  if(qty2.value > 0){
-    menuDetail.push(`Banana Roll x${qty2.value}`);
-    totalQty += parseInt(qty2.value);
-  }
-
-  const totalAmount = totalEl.innerText;
-
-  const data = {
-    nama: nama.value,
-    phone: phone.value,
-    menu: menuDetail.join(", "),
-    qty: totalQty,
-    total: totalAmount,
-    note: note.value
+  const data={
+    nama:nama.value,
+    phone:phone.value,
+    menu:menuDetail.join(", "),
+    qty:totalQty,
+    total:totalAmount,
+    note:note.value,
+    file:base64File,
+    fileName:fileName
   };
 
-  try {
-    const res = await fetch(scriptURL, {
-      method: "POST",
-      body: JSON.stringify(data)
+  try{
+    const res=await fetch(scriptURL,{
+      method:"POST",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body:JSON.stringify(data)
     });
+    const json=await res.json();
+    if(json.error){alert("Gagal hantar order: "+json.error);}
+    else{
+      let msg = `No Order: <b>${json.orderId}</b><br>Total: RM ${totalAmount}`;
+      if(json.fileUrl) msg += `<br>Fail Upload: <a href="${json.fileUrl}" target="_blank">Klik sini untuk muat turun</a>`;
+      showPopup(msg);
+      this.reset(); 
+      updateTotal();
+    }
+  }catch(err){alert("Gagal hantar order"); console.error(err);}
 
-    const json = await res.json();
-
-    showPopup(`No Order: <b>${json.orderId}</b><br>Total: RM ${totalAmount}`);
-
-    this.reset();
-    updateTotal();
-
-  } catch(err) {
-    alert("Gagal hantar order. Sila cuba lagi.");
-  }
-
-  // stop loading
-  submitBtn.disabled = false;
-  submitBtn.innerText = "Hantar Order";
-
+  submitBtn.disabled=false; 
+  submitBtn.innerText="Hantar Order";
 });
-
 </script>
 
 </body>
