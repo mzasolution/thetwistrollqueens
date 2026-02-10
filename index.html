@@ -60,19 +60,17 @@ button:disabled{opacity:0.6;}
 
 <form id="orderForm">
   <div class="card">
-    <h3>Pilih Menu (klik gambar untuk resepi)</h3>
+    <h3>Pilih Menu (Klik gambar untuk info makanan)</h3>
     <div class="menu-grid">
       <div class="menu-item">
         <img src="https://raw.githubusercontent.com/mzasolution/thetwistrollqueens/main/bananawrap.png" onclick="showDetailPopup('wrap')" style="cursor:pointer;">
         <p>Twisties Banana Wrap</p>
-        <p style="font-size:12px; color:#555; margin-top:-5px;">1 pack – 10 pcs wrap</p>
         <p class="price">RM6</p>
         Qty:<input type="number" id="qty1" class="qty" value="0" min="0">
       </div>
       <div class="menu-item">
         <img src="https://raw.githubusercontent.com/mzasolution/thetwistrollqueens/main/bananaroll.png" onclick="showDetailPopup('roll')" style="cursor:pointer;">
-        <p>Twissroll Banana Pastry</p>
-        <p style="font-size:12px; color:#555; margin-top:-5px;">1 pack – 10 pcs wrap</p>
+        <p>Twisties Banana Roll</p>
         <p class="price">RM7</p>
         Qty:<input type="number" id="qty2" class="qty" value="0" min="0">
       </div>
@@ -124,8 +122,6 @@ button:disabled{opacity:0.6;}
       <button onclick="switchLang('bm')" style="background:#ffd700;color:#c40000; padding:6px 10px; border:none; border-radius:6px; cursor:pointer;">BM</button>
       <button onclick="switchLang('en')" style="background:#00aaff;color:white; padding:6px 10px; border:none; border-radius:6px; cursor:pointer;">EN</button>
     </div>
-    
-    <h2 id="popupTitle" style="color:#c40000; margin-top:0; text-align:center;">📋 Resepi & Cara Penyediaan</h2>
     
     <div id="popupDetail" class="popup-content"></div>
     
@@ -224,102 +220,39 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
 // Popup Resepi
 let currentMenu = "wrap";
 
-const popupTitle = {
-  wrap: { bm: "📋 Resepi & Cara Penyediaan", en: "📋 Recipe & Method" },
-  roll: { bm: "📋 Resepi & Cara Penyediaan", en: "📋 Recipe & Method" }
-};
-
 const recipes = {
   wrap: {
     bm: `
 <b>TWISTIES WRAP PISANG (TANPA GORENG) – 10 BIJI</b>
 <hr>
-<b>Bahan-bahan:</b>
 <ul>
-<li>10 keping wrap tortilla / paratha</li>
-<li>4 biji pisang masak (~400 g), dilenyek ringan / dihiris nipis</li>
-<li>100 g keju parut</li>
-<li>50 g Twisties yang dihancurkan</li>
-<li>100 g sapuan coklat / Nutella</li>
+<li>Wrap lembut dan hangat berisi pisang, sapuan coklat, keju parut, dan Twisties rangup. Lembut, sedikit messy, tetapi sangat sedap dan ketagihan.</li>
+
 </ul>
-<b>Cara Penyediaan:</b>
-<ol>
-<li>Panaskan wrap di atas kuali tanpa minyak.</li>
-<li>Sapukan 10 g coklat pada setiap wrap.</li>
-<li>Letakkan pisang (~40 g setiap wrap).</li>
-<li>Taburkan 10 g keju dan 5 g Twisties yang dihancurkan.</li>
-<li>Balut dengan kemas.</li>
-<li>Hidangkan serta-merta atau bakar seketika sehingga keju cair.</li>
-</ol>
 `,
     en: `
 <b>TWISTIES BANANA WRAP (NO FRY) – 10 PCS</b>
 <hr>
-<b>Ingredients:</b>
 <ul>
-<li>10 tortilla / paratha wraps</li>
-<li>4 ripe bananas (~400 g), lightly mashed or thinly sliced</li>
-<li>100 g grated cheese</li>
-<li>50 g crushed Twisties</li>
-<li>100 g chocolate spread / Nutella</li>
+<li>Soft warm wrap filled with banana, chocolate spread, grated cheese, and crunchy Twisties. Light, messy-good, and super addictive.</li>
+
 </ul>
-<b>Method:</b>
-<ol>
-<li>Heat wraps lightly on a pan (no oil).</li>
-<li>Spread 10 g chocolate per wrap.</li>
-<li>Place banana slices or mashed banana on top (~40 g per wrap).</li>
-<li>Sprinkle 10 g cheese and 5 g crushed Twisties per wrap.</li>
-<li>Wrap tightly.</li>
-<li>Serve immediately or grill lightly until cheese melts.</li>
-</ol>
 `
   },
   roll: {
     bm: `
 <b>TWISTIES ROLL PISANG (GORENG) – 10 BIJI</b>
 <hr>
-<b>Bahan-bahan:</b>
 <ul>
-<li>10 keping kulit popia</li>
-<li>4 biji pisang masak (~400 g) (Pisang Emas atau Pisang Raja)</li>
-<li>100 g keju parut (cheddar atau mozzarella)</li>
-<li>50 g Twisties yang dihancurkan (sebarang perisa)</li>
-<li>2–3 sudu besar susu pekat manis (pilihan)</li>
-<li>300 ml minyak masak (untuk menggoreng)</li>
+<li>Popia pisang goreng rangup diisi dengan pisang manis, keju cair, dan Twisties yang hancur. Gabungan manis, masin, dan cheesy yang sempurna dalam setiap gigitan.</li>
 </ul>
-<b>Cara Penyediaan:</b>
-<ol>
-<li>Letakkan sebiji pisang di atas sekeping kulit popia.</li>
-<li>Taburkan 10 g keju per gulungan.</li>
-<li>Masukkan 5 g Twisties yang dihancurkan setiap gulungan.</li>
-<li>Siram sedikit susu pekat manis jika suka.</li>
-<li>Gulung kemas dan lekatkan hujung dengan sedikit air.</li>
-<li>Goreng dengan api sederhana sehingga keemasan dan rangup (±2–3 minit setiap bahagian).</li>
-<li>Toskan minyak berlebihan dan hidangkan panas.</li>
-</ol>
 `,
     en: `
 <b>TWISTIES BANANA ROLL (FRIED) – 10 PCS</b>
 <hr>
-<b>Ingredients:</b>
 <ul>
-<li>10 spring roll wrappers</li>
-<li>4 ripe bananas (~400 g) (Pisang Emas or Pisang Raja)</li>
-<li>100 g grated cheese (cheddar or mozzarella)</li>
-<li>50 g crushed Twisties (any flavor)</li>
-<li>2–3 tbsp condensed milk (optional)</li>
-<li>300 ml cooking oil (for frying)</li>
-</ul>
-<b>Method:</b>
-<ol>
-<li>Place a banana on a spring roll wrapper.</li>
-<li>Sprinkle 10 g grated cheese per roll.</li>
-<li>Add 5 g crushed Twisties per roll.</li>
-<li>Drizzle condensed milk if desired.</li>
-<li>Roll tightly and seal the edge with water.</li>
-<li>Fry over medium heat until golden and crispy (~2–3 min each side).</li>
-<li>Drain excess oil and serve hot.</li>
-</ol>
+<li>Crispy fried spring roll filled with sweet banana, melted cheese, and crunchy crushed Twisties. Perfect balance of sweet, salty, and cheesy in every bite.</li>
+<ul>
 `
   }
 };
@@ -330,7 +263,6 @@ function showDetailPopup(menu){
   document.getElementById("detailPopup").style.display = "flex";
 }
 function switchLang(lang){
-  document.querySelector("#detailPopup h2").innerHTML = popupTitle[currentMenu][lang];
   document.getElementById("popupDetail").innerHTML = recipes[currentMenu][lang];
 }
 function closeDetailPopup(){
