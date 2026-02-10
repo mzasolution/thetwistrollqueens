@@ -156,7 +156,6 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
     if(json.error){alert("Gagal hantar order: "+json.error);}
     else{
       let msg = `No Order: <b>${json.orderId}</b><br>Total: RM ${totalAmount}`;
-      if(json.fileUrl) msg += `<br>Fail Upload: <a href="${json.fileUrl}" target="_blank">Klik sini untuk muat turun</a>`;
       showPopup(msg);
       this.reset(); 
       updateTotal();
