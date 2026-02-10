@@ -17,10 +17,41 @@ input,textarea,select{width:100%;padding:10px;margin:8px auto 15px auto;border-r
 .total-box{font-size:20px;font-weight:bold;text-align:right;margin-top:10px;color:#c40000;}
 button{width:100%;padding:12px;background:#c40000;color:white;border:none;border-radius:8px;font-size:16px;cursor:pointer;}
 button:disabled{opacity:0.6;}
-.popup{display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.5); justify-content:center; align-items:center;}
-.popup-box{background:white;padding:25px;border-radius:12px;text-align:center;}
-.popup-box a{color:#c40000; text-decoration:none; font-weight:bold;}
+.popup{display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.5); justify-content:center; align-items:center; z-index:999;}
+.popup-box{background:white;padding:25px;border-radius:12px;text-align:center; max-width:90%; box-sizing:border-box;}
 .bank-info{border:2px dashed #c40000; border-radius:10px; padding:15px; margin-bottom:15px; background:#fff8f8;}
+
+/* Detail popup styling */
+.popup-detail {
+  max-width: 600px;
+  text-align: left;
+  overflow-y: auto;
+  max-height: 80vh;
+  padding: 25px;
+  border-radius: 15px;
+  background: #fff8f8;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  line-height: 1.6;
+  font-size: 14px;
+}
+.popup-detail h2 {
+  text-align:center;
+  font-size:22px;
+}
+.popup-content b {
+  color:#c40000;
+}
+.popup-content ul, .popup-content ol {
+  margin:5px 0 15px 20px;
+}
+.popup-content li {
+  margin-bottom:6px;
+}
+.popup-content hr {
+  border:none;
+  border-top:1px dashed #c40000;
+  margin:15px 0;
+}
 </style>
 </head>
 <body>
@@ -32,14 +63,16 @@ button:disabled{opacity:0.6;}
     <h3>Pilih Menu</h3>
     <div class="menu-grid">
       <div class="menu-item">
-        <img src="https://raw.githubusercontent.com/mzasolution/thetwistrollqueens/main/bananawrap.png">
+        <img src="https://raw.githubusercontent.com/mzasolution/thetwistrollqueens/main/bananawrap.png" onclick="showDetailPopup('wrap')" style="cursor:pointer;">
         <p>Twisties Banana Wrap</p>
+        <p style="font-size:12px; color:#555; margin-top:-5px;">1 pack – 10 pcs wrap</p>
         <p class="price">RM6</p>
         Qty:<input type="number" id="qty1" class="qty" value="0" min="0">
       </div>
       <div class="menu-item">
-        <img src="https://raw.githubusercontent.com/mzasolution/thetwistrollqueens/main/bananaroll.png">
+        <img src="https://raw.githubusercontent.com/mzasolution/thetwistrollqueens/main/bananaroll.png" onclick="showDetailPopup('roll')" style="cursor:pointer;">
         <p>Twissroll Banana Pastry</p>
+        <p style="font-size:12px; color:#555; margin-top:-5px;">1 pack – 10 pcs wrap</p>
         <p class="price">RM7</p>
         Qty:<input type="number" id="qty2" class="qty" value="0" min="0">
       </div>
@@ -73,11 +106,34 @@ button:disabled{opacity:0.6;}
   </div>
 </form>
 
+<!-- Order Success Popup -->
 <div id="popup" class="popup">
   <div class="popup-box">
     <h3>Order Berjaya 🎉</h3>
     <p id="popupText"></p>
     <button onclick="closePopup()">OK</button>
+  </div>
+</div>
+
+<!-- Detail Popup -->
+<div id="detailPopup" class="popup" onclick="closeDetailPopup()">
+  <div class="popup-box popup-detail" onclick="event.stopPropagation()">
+    
+    <!-- Buttons atas -->
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-bottom:10px;">
+      <button onclick="switchLang('bm')" style="background:#ffd700;color:#c40000; padding:6px 10px; border:none; border-radius:6px; cursor:pointer;">BM</button>
+      <button onclick="switchLang('en')" style="background:#00aaff;color:white; padding:6px 10px; border:none; border-radius:6px; cursor:pointer;">EN</button>
+    </div>
+    
+    <h2 id="popupTitle" style="color:#c40000; margin-top:0; text-align:center;">📋 Resepi & Cara Penyediaan</h2>
+    
+    <div id="popupDetail" class="popup-content"></div>
+    
+    <!-- Tutup button bawah -->
+    <div style="margin-top:20px; text-align:center;">
+      <button onclick="closeDetailPopup()" style="background:#c40000;color:white; padding:8px 12px; border:none; border-radius:6px; cursor:pointer;">Tutup</button>
+    </div>
+    
   </div>
 </div>
 
@@ -111,7 +167,6 @@ function closePopup(){document.getElementById("popup").style.display="none";}
 document.getElementById("orderForm").addEventListener("submit", async function(e){
   e.preventDefault();
 
-  // Validasi wajib
   if(qty1.value==0 && qty2.value==0){alert("Sila pilih sekurang-kurangnya 1 menu"); return;}
   if(!fileInput.files.length){
     alert("⚠️ Sila membuat pembayaran terlebih dahulu dan upload resit pembayaran");
@@ -122,7 +177,7 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
   submitBtn.innerText="Loading...";
 
   let menuDetail=[], totalQty=0;
-  if(qty1.value>0){menuDetail.push(`Twisroll Queens x${qty1.value}`); totalQty+=parseInt(qty1.value);}
+  if(qty1.value>0){menuDetail.push(`Twisties Banana Wrap x${qty1.value}`); totalQty+=parseInt(qty1.value);}
   if(qty2.value>0){menuDetail.push(`Banana Roll x${qty2.value}`); totalQty+=parseInt(qty2.value);}
   const totalAmount=totalEl.innerText;
 
@@ -165,6 +220,122 @@ document.getElementById("orderForm").addEventListener("submit", async function(e
   submitBtn.disabled=false; 
   submitBtn.innerText="Hantar Order";
 });
+
+// Popup Resepi
+let currentMenu = "wrap";
+
+const popupTitle = {
+  wrap: { bm: "📋 Resepi & Cara Penyediaan", en: "📋 Recipe & Method" },
+  roll: { bm: "📋 Resepi & Cara Penyediaan", en: "📋 Recipe & Method" }
+};
+
+const recipes = {
+  wrap: {
+    bm: `
+<b>TWISTIES WRAP PISANG (TANPA GORENG) – 10 BIJI</b>
+<hr>
+<b>Bahan-bahan:</b>
+<ul>
+<li>10 keping wrap tortilla / paratha</li>
+<li>4 biji pisang masak (~400 g), dilenyek ringan / dihiris nipis</li>
+<li>100 g keju parut</li>
+<li>50 g Twisties yang dihancurkan</li>
+<li>100 g sapuan coklat / Nutella</li>
+</ul>
+<b>Cara Penyediaan:</b>
+<ol>
+<li>Panaskan wrap di atas kuali tanpa minyak.</li>
+<li>Sapukan 10 g coklat pada setiap wrap.</li>
+<li>Letakkan pisang (~40 g setiap wrap).</li>
+<li>Taburkan 10 g keju dan 5 g Twisties yang dihancurkan.</li>
+<li>Balut dengan kemas.</li>
+<li>Hidangkan serta-merta atau bakar seketika sehingga keju cair.</li>
+</ol>
+`,
+    en: `
+<b>TWISTIES BANANA WRAP (NO FRY) – 10 PCS</b>
+<hr>
+<b>Ingredients:</b>
+<ul>
+<li>10 tortilla / paratha wraps</li>
+<li>4 ripe bananas (~400 g), lightly mashed or thinly sliced</li>
+<li>100 g grated cheese</li>
+<li>50 g crushed Twisties</li>
+<li>100 g chocolate spread / Nutella</li>
+</ul>
+<b>Method:</b>
+<ol>
+<li>Heat wraps lightly on a pan (no oil).</li>
+<li>Spread 10 g chocolate per wrap.</li>
+<li>Place banana slices or mashed banana on top (~40 g per wrap).</li>
+<li>Sprinkle 10 g cheese and 5 g crushed Twisties per wrap.</li>
+<li>Wrap tightly.</li>
+<li>Serve immediately or grill lightly until cheese melts.</li>
+</ol>
+`
+  },
+  roll: {
+    bm: `
+<b>TWISTIES ROLL PISANG (GORENG) – 10 BIJI</b>
+<hr>
+<b>Bahan-bahan:</b>
+<ul>
+<li>10 keping kulit popia</li>
+<li>4 biji pisang masak (~400 g) (Pisang Emas atau Pisang Raja)</li>
+<li>100 g keju parut (cheddar atau mozzarella)</li>
+<li>50 g Twisties yang dihancurkan (sebarang perisa)</li>
+<li>2–3 sudu besar susu pekat manis (pilihan)</li>
+<li>300 ml minyak masak (untuk menggoreng)</li>
+</ul>
+<b>Cara Penyediaan:</b>
+<ol>
+<li>Letakkan sebiji pisang di atas sekeping kulit popia.</li>
+<li>Taburkan 10 g keju per gulungan.</li>
+<li>Masukkan 5 g Twisties yang dihancurkan setiap gulungan.</li>
+<li>Siram sedikit susu pekat manis jika suka.</li>
+<li>Gulung kemas dan lekatkan hujung dengan sedikit air.</li>
+<li>Goreng dengan api sederhana sehingga keemasan dan rangup (±2–3 minit setiap bahagian).</li>
+<li>Toskan minyak berlebihan dan hidangkan panas.</li>
+</ol>
+`,
+    en: `
+<b>TWISTIES BANANA ROLL (FRIED) – 10 PCS</b>
+<hr>
+<b>Ingredients:</b>
+<ul>
+<li>10 spring roll wrappers</li>
+<li>4 ripe bananas (~400 g) (Pisang Emas or Pisang Raja)</li>
+<li>100 g grated cheese (cheddar or mozzarella)</li>
+<li>50 g crushed Twisties (any flavor)</li>
+<li>2–3 tbsp condensed milk (optional)</li>
+<li>300 ml cooking oil (for frying)</li>
+</ul>
+<b>Method:</b>
+<ol>
+<li>Place a banana on a spring roll wrapper.</li>
+<li>Sprinkle 10 g grated cheese per roll.</li>
+<li>Add 5 g crushed Twisties per roll.</li>
+<li>Drizzle condensed milk if desired.</li>
+<li>Roll tightly and seal the edge with water.</li>
+<li>Fry over medium heat until golden and crispy (~2–3 min each side).</li>
+<li>Drain excess oil and serve hot.</li>
+</ol>
+`
+  }
+};
+
+function showDetailPopup(menu){
+  currentMenu = menu;
+  switchLang('bm');
+  document.getElementById("detailPopup").style.display = "flex";
+}
+function switchLang(lang){
+  document.querySelector("#detailPopup h2").innerHTML = popupTitle[currentMenu][lang];
+  document.getElementById("popupDetail").innerHTML = recipes[currentMenu][lang];
+}
+function closeDetailPopup(){
+  document.getElementById("detailPopup").style.display = "none";
+}
 </script>
 
 </body>
